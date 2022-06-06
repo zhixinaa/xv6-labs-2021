@@ -5,6 +5,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "sysinfo.h"
 
 struct cpu cpus[NCPU];
 
@@ -302,6 +303,8 @@ fork(void)
   np->cwd = idup(p->cwd);
 
   safestrcpy(np->name, p->name, sizeof(p->name));
+
+  np->trace_mask = p->trace_mask;
 
   pid = np->pid;
 
@@ -653,4 +656,36 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+// trace
+int
+trace(int mask)
+{
+  struct proc *p = myproc();
+  acquire(&p->lock);
+  p->trace_mask = mask;
+  release(&p->lock);
+  return 0;
+}
+
+uint64 get_nproc(void)
+{
+  uint64 cnt=0;
+  for(int i=0;i<NPROC;i++){
+    if(proc[i].state != UNUSED) cnt++;
+  }
+  return cnt;
+}
+
+// sysinfo
+int
+sysinfo(struct sysinfo * p)
+{
+  struct sysinfo sf;
+	sf.nproc = get_nproc();
+	sf.freemem = get_av_size();
+	if (copyout(myproc()->pagetable,(uint64)p,(char*)&sf,sizeof(sf)) < 0)
+		return -1;
+	return 0;
 }

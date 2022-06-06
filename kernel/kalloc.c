@@ -10,6 +10,7 @@
 #include "defs.h"
 
 void freerange(void *pa_start, void *pa_end);
+uint64 get_av_size(void);
 
 extern char end[]; // first address after kernel.
                    // defined by kernel.ld.
@@ -79,4 +80,20 @@ kalloc(void)
   if(r)
     memset((char*)r, 5, PGSIZE); // fill with junk
   return (void*)r;
+}
+
+uint64 get_av_size(void)
+{
+  struct run *r;
+  uint64 cnt=0;
+  acquire(&kmem.lock);
+
+  r = kmem.freelist;
+  while(r){
+    r = r->next;
+    cnt+=PGSIZE;
+  }
+  release(&kmem.lock);
+
+  return cnt;
 }

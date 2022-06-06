@@ -23,6 +23,8 @@ entry("read");
 entry("write");
 entry("close");
 entry("kill");
+entry("trace");
+entry("sysinfo");
 entry("exec");
 entry("open");
 entry("mknod");

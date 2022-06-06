@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "*.cu": "cuda-cpp",
+        "proc.h": "c",
+        "types.h": "c",
+        "riscv.h": "c",
+        "defs.h": "c",
+        "user.h": "c",
+        "param.h": "c",
+        "stat.h": "c",
+        "date.h": "c",
+        "sysinfo.h": "c",
+        "memlayout.h": "c",
+        "syscall.h": "c"
+    }
+}
